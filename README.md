@@ -187,3 +187,76 @@ Para extrair o banco do cenário atual de silos sem impactar a operação em pro
 1. **Fase 1: Abstração com API Layer (Curto Prazo):** Criação de um API Gateway e uma camada BFF (*Backend-For-Frontend*) para unificar a experiência dos canais digitais enquanto os sistemas legados de empréstimo continuam rodando de forma isolada.
 2. **Fase 2: Implantação da Conta & Core Moderno (Médio Prazo):** Lançamento do microsserviço de Conta de Pagamentos e o novo Ledger unificado, passando a receber o fluxo transacional primário do banco.
 3. **Fase 3: Estrangulamento do Legado (Longo Prazo):** Migração gradual das regras de negócio de cada silo de empréstimo (CDC, Cartões, etc.) para utilizarem as novas capacidades do Core unificado e liquidarem diretamente na nova conta digital. Desativação final dos sistemas legados.
+ ## 📊 Diagrama Arquitetural TO-BE
+
+```mermaid
+graph TD
+    %% Estilos Gerais
+    classDef core fill:#1b4d3e,stroke:#333,stroke-width:2px,color:#fff;
+    classDef generic fill:#4a5568,stroke:#333,stroke-width:1px,color:#fff;
+    classDef support fill:#2b6cb0,stroke:#333,stroke-width:1px,color:#fff;
+    classDef client fill:#edf2f7,stroke:#333,stroke-width:1px,color:#000;
+    classDef broker fill:#d69e2e,stroke:#333,stroke-width:2px,color:#fff;
+
+    %% Camada de Entrada / Clientes
+    subgraph Camada_Canais [Canais Digitais & Experiência]
+        APP[App Mobile / Web]:::client
+        API_GW[API Gateway / BFF Unificado]:::client
+        APP --> API_GW
+    end
+
+    %% Bounded Contexts / Microsserviços (TO-BE)
+    subgraph Core_Domains [Subdomínios de Core - Máximo Valor de Negócio]
+        
+        subgraph MS_Conta [Microsserviço Conta de Pagamentos]
+            %% DDD Tático
+            subgraph Aggregate_Root [Aggregate Root: Account]
+                VO1[AccountId]
+                VO2[Amount]
+                E1[Entity: Transaction]
+                
+                VO1 -.-> Account
+                VO2 -.-> Account
+                E1 -.-> Account
+                
+                Account{Regras de Saldo & Estado}
+            end
+            DB_Conta[(Database per Service: Conta)]
+            Account --> DB_Conta
+        end
+
+        subgraph MS_Credito [Microsserviço de Crédito Integrado]
+            Engine[Motor de Crédito Único]
+            Legado[Abstração: CDC / Consignado / Cartão]
+            Engine --> Legado
+            DB_Credito[(Database per Service: Crédito)]
+            Engine --> DB_Credito
+        end
+    end
+
+    subgraph Supporting_Domain [Subdomínio de Suporte]
+        MS_KYC[Microsserviço Cadastro & KYC]:::support
+    end
+
+    subgraph Generic_Domain [Subdomínio Genérico]
+        MS_Cashback[Parcerias & Cashback Externo]:::generic
+    end
+
+    %% Camada de Integração Assíncrona
+    subgraph Event_Driven [Mensageria & Interoperabilidade]
+        Broker[[Message Broker: Apache Kafka]]:::broker
+    end
+
+    %% Fluxos de Comunicação (Relações)
+    API_GW -->|HTTP / REST| MS_KYC
+    API_GW -->|HTTP / REST| Account
+    API_GW -->|HTTP / REST| Engine
+
+    Engine -->|1. Publica Evento: 'CreditoAprovado'| Broker
+    Broker -->|2. Consome Evento & Liquida Saldo| Account
+    
+    Account -.->|3. Futura Expansão: 'TransacaoEfetuada'| MS_Cashback
+
+    %% Aplicando Estilos aos Blocos Principais
+    class Account,Engine core;
+```
