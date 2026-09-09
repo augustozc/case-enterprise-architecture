@@ -1,4 +1,4 @@
-# 🏛️ Enterprise Architecture Case Study - Banco Digital S.A.
+# Enterprise Architecture Case Study - Banco Digital S.A.
 
 Este repositório contém a resolução técnica e estratégica para o case de arquitetura corporativa, utilizando as boas práticas do setor bancário, o framework **TOGAF ADM (Fase A - Architecture Vision)** e os padrões do **Domain-Driven Design (DDD)** implementados em **Python**.
 
@@ -197,7 +197,7 @@ Para extrair o banco do cenário atual de silos sem impactar a operação em pro
 1. **Fase 1: Abstração com API Layer (Curto Prazo):** Criação de um API Gateway e uma camada BFF (*Backend-For-Frontend*) para unificar a experiência dos canais digitais enquanto os sistemas legados de empréstimo continuam rodando de forma isolada.
 2. **Fase 2: Implantação da Conta & Core Moderno (Médio Prazo):** Lançamento do microsserviço de Conta de Pagamentos e o novo Ledger unificado, passando a receber o fluxo transacional primário do banco.
 3. **Fase 3: Estrangulamento do Legado (Longo Prazo):** Migração gradual das regras de negócio de cada silo de empréstimo (CDC, Cartões, etc.) para utilizarem as novas capacidades do Core unificado e liquidarem diretamente na nova conta digital. Desativação final dos sistemas legados.
- ## 📊 Diagrama Arquitetural TO-BE
+ ## Diagrama Arquitetural TO-BE
 
 ```mermaid
 graph TD
