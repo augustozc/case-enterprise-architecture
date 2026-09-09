@@ -14,6 +14,16 @@ O time de Enterprise Architecture recomenda formalmente a priorização do produ
 2. **Engajamento Sustentável:** A conta digital centraliza o pagamento de contas (boletos, PIX, DDA) e atrai a folha de pagamento (portabilidade), retendo o saldo do cliente na instituição e aumentando o *LTV (Lifetime Value)*.
 3. **Plataforma de Core Bancário:** A aquisição/construção de uma plataforma moderna de Core Bancário (provocada pelo CTO) faz total sentido acoplada à Conta de Pagamentos. Ela servirá para quebrar os silos dos produtos de empréstimo atuais (CDC, Cartões, Consignado), centralizando os saldos e o livro-razão (*ledger*) em uma malha única e escalável.
 
+### Alinhamento de Governança (TOGAF ADM Fase A)
+Atua formalmente como a **Declaração de Trabalho de Arquitetura (Statement of Architecture Work)**, definindo escopo, restrições e validação de capacidades de negócio.
+
+---
+
+##  Domínios (Resumo)
+* **Recomendação:** Priorização da **Conta de Pagamentos** como "Core Líquido" para centralização financeira e quebra de silos.
+* **Domínios DDD:** Separação entre *Core Domains* (Gestão de Empréstimos, Conta de Pagamentos), *Supporting Domain* (KYC) e *Generic Domain* (Cashback).
+* **Arquitetura Alvo:** Aplicação de microsserviços, *Database per Service*, EDA e padrão *Strangler Fig* para migração segura do legado.
+
 ---
 
 ## 2. Mapa de Problemas de Negócios (Subdomínios DDD)
